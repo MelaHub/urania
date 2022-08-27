@@ -1,0 +1,28 @@
+:root {
+    --bg-inner: white;
+    --bg-outer: white;
+  }
+  
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    position: relative;
+  }
+  
+  .container {
+    height: 100vh;
+    width: 100vw;
+    padding: 1rem;
+    background-image: radial-gradient(var(--bg-inner) 0%, var(--bg-outer) 100%);
+  
+    svg {
+      width: 100%;
+      aspect-ratio: 1;
+    }
+  
+    svg * {
+      /*    Removes little gaps between the shapes */
+      shape-rendering: crispEdges;
+    }
+  }
