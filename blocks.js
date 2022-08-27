@@ -68,6 +68,27 @@ function drawQuarterCircle(x, y, foreground, background) {
     circleGroup.maskWith(mask);
     group.add(circleGroup);
 }
+
+function drawCross(x, y, foreground, background) {
+    const group = draw.group().addClass("draw-cross");
+    const crossGroup = draw.group();
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
+  
+    crossGroup
+      .rect(squareSize / 1.5, squareSize / 5)
+      .fill(foreground)
+      .center(x + squareSize / 2, y + squareSize / 2);
+  
+    crossGroup
+      .rect(squareSize / 1.5, squareSize / 5)
+      .fill(foreground)
+      .center(x + squareSize / 2, y + squareSize / 2)
+      .transform({ rotate: 90 });
+  
+    if (Math.random() < 0.4) {
+      crossGroup.transform({ rotate: 45, origin: "center center" });
+    }
+  }
   
 function getTwoColors(colors) {
     let colorList = [...colors];
@@ -85,7 +106,7 @@ function generateNewGrid() {
 
 function generateLittleBlock(i, j) {
     const { foreground, background } = getTwoColors(colorPalette);
-    const blockStyleOptions = [drawQuarterCircle, drawCircle, drawOppositeCircles];
+    const blockStyleOptions = [drawCross, drawQuarterCircle, drawCircle, drawOppositeCircles];
     const blockStyle = random(blockStyleOptions);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
