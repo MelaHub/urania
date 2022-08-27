@@ -40,6 +40,13 @@ function drawCircle(x, y, foreground, background) {
     const group = draw.group().addClass("draw-circle");
     group.rect(squareSize, squareSize).fill(background).move(x, y);
     group.circle(squareSize).fill(foreground).move(x, y);
+    // 30% of the time add an inner circle
+    if (Math.random() < 0.3) {
+        group
+        .circle(squareSize / 2)
+        .fill(background)
+        .move(x + squareSize / 4, y + squareSize / 4);
+    }
   }
   
 
