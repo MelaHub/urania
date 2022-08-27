@@ -48,8 +48,27 @@ function drawCircle(x, y, foreground, background) {
         .move(x + squareSize / 4, y + squareSize / 4);
     }
   }
+
+
+function drawQuarterCircle(x, y, foreground, background) {
+    const group = draw.group().addClass("draw-quarter-circle");
+    const circleGroup = draw.group();
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
+
+    const offset = random([   
+        [0, 0], // btm right
+        [0, -squareSize], // top right
+        [-squareSize, -squareSize], // top left
+        [-squareSize, 0], // btm left
+      ]);    
   
 
+    const mask = draw.rect(squareSize, squareSize).fill("#fff").move(x, y);
+    circleGroup.circle(2 * squareSize).fill(foreground).move(x+ offset[0], y + offset[1]);
+    circleGroup.maskWith(mask);
+    group.add(circleGroup);
+}
+  
 function getTwoColors(colors) {
     let colorList = [...colors];
     const colorIndex = random(0, colorList.length - 1, true);
@@ -59,12 +78,6 @@ function getTwoColors(colors) {
     return { foreground, background };
   }
 
-function drawBlock(x, y, background) {
-    const group = draw.group().addClass("draw-block");
-  
-    group.rect(squareSize, squareSize).fill(background).move(x, y);
-}
-
 function generateNewGrid() {
     document.querySelector(".container").innerHTML = "";
     drawGrid();
@@ -72,7 +85,7 @@ function generateNewGrid() {
 
 function generateLittleBlock(i, j) {
     const { foreground, background } = getTwoColors(colorPalette);
-    const blockStyleOptions = [drawCircle, drawOppositeCircles];
+    const blockStyleOptions = [drawQuarterCircle, drawCircle, drawOppositeCircles];
     const blockStyle = random(blockStyleOptions);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
@@ -82,9 +95,9 @@ function generateLittleBlock(i, j) {
 
 async function drawGrid() {
     colorPalette = random(colors);
-    squareSize = 50;
-    numRows = random(4, 8, true);
-    numCols = random(4, 8, true);
+    squareSize = 10;
+    numRows = random(4, 20, true);
+    numCols = random(4, 20, true);
 
     const bg = tinycolor
         .mix(colorPalette[0], colorPalette[1], 50)
