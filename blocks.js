@@ -206,7 +206,7 @@ function generateLittleBlock(i, j) {
   
     let prevSquareSize = squareSize;
   
-    const multiplier = random([2, 3, 4, 5]);
+    const multiplier = random(Array.from({length:Math.min(numCols, numRows) / 2},(_,k)=>k+2));
     squareSize = multiplier * squareSize;
   
     const xPos = random(0, numRows - multiplier, true) * prevSquareSize;
