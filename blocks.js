@@ -1,5 +1,7 @@
 import { SVG } from "https://cdn.skypack.dev/@svgdotjs/svg.js@3.1.1";
 import { random } from "https://cdn.skypack.dev/@georgedoescode/generative-utils@1.0.37";
+import tinycolor from "https://cdn.skypack.dev/tinycolor2@1.4.2";
+import gsap from "https://cdn.skypack.dev/gsap@3.9.1";
 
 console.clear();
 
@@ -29,6 +31,23 @@ async function drawGrid() {
     squareSize = 50;
     numRows = random(4, 8, true);
     numCols = random(4, 8, true);
+
+    const bg = tinycolor
+        .mix(colorPalette[0], colorPalette[1], 50)
+        .desaturate(10)
+        .toString();
+
+    // Make Lighter version
+    const bgInner = tinycolor(bg).lighten(10).toString();
+    // And darker version
+    const bgOuter = tinycolor(bg).darken(10).toString();
+
+    // Set to CSS Custom Properties
+    gsap.to(".container", {
+        "--bg-inner": bgInner,
+        "--bg-outer": bgOuter,
+        duration: 0.5
+    });
 
     // Create parent SVG
     draw = SVG()
