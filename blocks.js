@@ -285,7 +285,6 @@ async function init() {
         "https://unpkg.com/nice-color-palettes@3.0.0/100.json"
     ).then((response) => response.json());
     generateNewGrid();
-    document.querySelector(".button").addEventListener("click", generateNewGrid);
 }
 
 init();
