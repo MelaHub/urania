@@ -3,12 +3,12 @@ import { random } from "https://cdn.skypack.dev/@georgedoescode/generative-utils
 
 console.clear();
 
-let draw, squareSize, numRows, numCols;
+let draw, squareSize, numRows, numCols, colors, colorPalette;
 
-function drawBlock(x, y) {
+function drawBlock(x, y, background) {
     const group = draw.group().addClass("draw-block");
   
-    group.rect(squareSize, squareSize).fill("white").stroke("black").move(x, y);
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
 }
 
 function generateNewGrid() {
@@ -17,14 +17,15 @@ function generateNewGrid() {
 }
 
 function generateLittleBlock(i, j) {
+    const background = random(colorPalette);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
   
-    drawBlock(xPos, yPos);
+    drawBlock(xPos, yPos, background);
   }
 
 async function drawGrid() {
-    // Set Variables
+    colorPalette = random(colors);
     squareSize = 50;
     numRows = random(4, 8, true);
     numCols = random(4, 8, true);
@@ -44,6 +45,10 @@ async function drawGrid() {
 }
 
 async function init() {
+    // Get color palettes
+    colors = await fetch(
+        "https://unpkg.com/nice-color-palettes@3.0.0/100.json"
+    ).then((response) => response.json());
     generateNewGrid();
     document.querySelector(".button").addEventListener("click", generateNewGrid);
 }
