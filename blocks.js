@@ -7,6 +7,22 @@ console.clear();
 
 let draw, squareSize, numRows, numCols, colors, colorPalette;
 
+function drawCircle(x, y, foreground, background) {
+    const group = draw.group().addClass("draw-circle");
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
+    group.circle(squareSize).fill(foreground).move(x, y);
+  }
+  
+
+function getTwoColors(colors) {
+    let colorList = [...colors];
+    const colorIndex = random(0, colorList.length - 1, true);
+    const background = colorList[colorIndex];
+    colorList.splice(colorIndex, 1);
+    const foreground = random(colorList);
+    return { foreground, background };
+  }
+
 function drawBlock(x, y, background) {
     const group = draw.group().addClass("draw-block");
   
@@ -19,11 +35,13 @@ function generateNewGrid() {
 }
 
 function generateLittleBlock(i, j) {
-    const background = random(colorPalette);
+    const { foreground, background } = getTwoColors(colorPalette);
+    const blockStyleOptions = [drawCircle];
+    const blockStyle = random(blockStyleOptions);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
   
-    drawBlock(xPos, yPos, background);
+    blockStyle(xPos, yPos, foreground, background);
   }
 
 async function drawGrid() {
