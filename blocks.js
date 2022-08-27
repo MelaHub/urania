@@ -7,6 +7,35 @@ console.clear();
 
 let draw, squareSize, numRows, numCols, colors, colorPalette;
 
+function drawOppositeCircles(x, y, foreground, background) {
+    const group = draw.group().addClass("opposite-circles");
+  
+    const circleGroup = draw.group();
+  
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
+    const mask = draw.rect(squareSize, squareSize).fill("#fff").move(x, y);
+
+    const offset = random([
+        // top left + bottom right
+        [0, 0, squareSize, squareSize],
+        // top right + bottom left
+        [0, squareSize, squareSize, 0],
+      ]);    
+  
+    circleGroup
+      .circle(squareSize)
+      .fill(foreground)
+      .center(x + offset[0], y + offset[1]); 
+  
+    circleGroup
+      .circle(squareSize)
+      .fill(foreground)
+      .center(x + offset[2], y + offset[3]);
+
+    circleGroup.maskWith(mask);
+    group.add(circleGroup);
+  }
+
 function drawCircle(x, y, foreground, background) {
     const group = draw.group().addClass("draw-circle");
     group.rect(squareSize, squareSize).fill(background).move(x, y);
@@ -36,7 +65,7 @@ function generateNewGrid() {
 
 function generateLittleBlock(i, j) {
     const { foreground, background } = getTwoColors(colorPalette);
-    const blockStyleOptions = [drawCircle];
+    const blockStyleOptions = [drawCircle, drawOppositeCircles];
     const blockStyle = random(blockStyleOptions);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
