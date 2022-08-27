@@ -7,6 +7,36 @@ console.clear();
 
 let draw, squareSize, numRows, numCols, colors, colorPalette;
 
+const selectedCharacters = [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    // O removed for looking like a circle
+    "P",
+    // Q removed for an annoying descender
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z",
+    "&"
+  ];
+
 function drawOppositeCircles(x, y, foreground, background) {
     const group = draw.group().addClass("opposite-circles");
   
@@ -112,6 +142,29 @@ function drawDots(x, y, foreground, background) {
         }
     }
 }
+
+function drawLetterBlock(x, y, foreground, background) {
+    const group = draw.group().addClass("draw-letter");
+    const mask = draw.rect(squareSize, squareSize).fill("#fff").move(x, y);
+  
+    // Draw Background
+    group.rect(squareSize, squareSize).fill(background).move(x, y);
+  
+    // Draw Foreground
+    const character = random(selectedCharacters);
+    const text = group.plain(character);
+    text.font({
+      family: "Source Code Pro",
+      size: squareSize * 1.2,
+      weight: 800,
+      anchor: "middle",
+      fill: foreground,
+      leading: 1
+    });
+    text.center(x + squareSize / 2, y + squareSize / 2);
+    text.rotate(random([0, 90, 180, 270]));
+    group.maskWith(mask);
+  }
   
 function getTwoColors(colors) {
     let colorList = [...colors];
@@ -122,19 +175,47 @@ function getTwoColors(colors) {
     return { foreground, background };
   }
 
-function generateNewGrid() {
-    document.querySelector(".container").innerHTML = "";
-    drawGrid();
-}
-
 function generateLittleBlock(i, j) {
     const { foreground, background } = getTwoColors(colorPalette);
-    const blockStyleOptions = [drawDots, drawCross, drawQuarterCircle, drawCircle, drawOppositeCircles];
+    const blockStyleOptions = [
+        drawDots, 
+        drawCross, 
+        drawQuarterCircle, 
+        drawCircle, 
+        drawOppositeCircles,
+        drawLetterBlock
+    ];
     const blockStyle = random(blockStyleOptions);
     const xPos = i * squareSize;
     const yPos = j * squareSize;
   
     blockStyle(xPos, yPos, foreground, background);
+  }
+
+  function generateBigBlock() {
+    const { foreground, background } = getTwoColors(colorPalette);
+  
+    const blockStyleOptions = [
+      drawCross,
+      drawCircle,
+      drawQuarterCircle,
+      drawOppositeCircles,
+      drawLetterBlock,
+      drawDots,
+    ];
+  
+    let prevSquareSize = squareSize;
+  
+    const multiplier = random([2, 3, 4, 5]);
+    squareSize = multiplier * squareSize;
+  
+    const xPos = random(0, numRows - multiplier, true) * prevSquareSize;
+    const yPos = random(0, numCols - multiplier, true) * prevSquareSize;
+  
+    const blockStyle = random(blockStyleOptions);
+    blockStyle(xPos, yPos, foreground, background);
+  
+    squareSize = prevSquareSize;
   }
 
 async function drawGrid() {
@@ -172,7 +253,31 @@ async function drawGrid() {
         generateLittleBlock(i, j);
         }
     }
+
+    generateBigBlock();
+
+    gsap.fromTo(
+        ".container > svg",
+        { opacity: 0, scale: 0.8 },
+        { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.7)" }
+    );
 }
+
+
+function generateNewGrid() {
+    // Fade out SVG
+    gsap.to(".container > svg", {
+      opacity: 0,
+      scale: 0.8,
+      duration: 0.25,
+      onComplete: () => {
+        // Remove previous SVG from DOM
+        document.querySelector(".container").innerHTML = "";
+        // Start new SVG creation
+        drawGrid();
+      }
+    });
+  }
 
 async function init() {
     // Get color palettes
